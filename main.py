@@ -16,10 +16,7 @@ def build_asset_list():
             asset_list.append(tr_elevator)
     return asset_list
 
-def run_program():
-    print("Building asset list...")
-    asset_list = build_asset_list()
-    print("Fetching asset data...")
+def query_db(asset_list):
     cnn = db.open_connection()
     cs = db.open_cursor(cnn)
     for asset in asset_list:
@@ -28,6 +25,12 @@ def run_program():
         asset.update_total_cycles(total_cycles_df)
     db.close_cursor(cs)
     db.close_connection(cnn)
+
+def run_program():
+    print("Building asset list...")
+    asset_list = build_asset_list()
+    print("Fetching asset data...")
+    query_db(asset_list)
     print("Asset data ready!")
 
 run_program()
