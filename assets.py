@@ -1,6 +1,6 @@
 import pandas as pd
 
-assets_manifest = pd.read_csv("assets.csv", header=0)
+# assets_manifest = pd.read_csv("assets.csv", header=0)
 
 class Asset:
 
@@ -33,6 +33,9 @@ class Elevator:
         + "ORDER BY TOTAL_CYCLES DESC"
         return sql
 
+    def update_total_cycles(self, total_cycles_df):
+        self.total_cycles = total_cycles_df.iloc[0].TOTAL_CYCLES
+
 class TouchPointElevator(TouchPoint, Elevator):
 
     def __init__(self, name, side, total_cycles=0, last_maintenance_date=0, partial_cycles=0):
@@ -54,18 +57,15 @@ class TerminalElevator(Terminal, Elevator):
         """Fill string literals with touchpoint-specific query parameters"""
         return super().get_total_cycles_query(header_context, query_context)
 
-def build_asset_list():
-    asset_list = []
-    for i in assets_manifest.index:
-        if "tp" in assets_manifest.name[i]:
-            for side in ["left", "right"]:
-                tp_elevator = TouchPointElevator(assets_manifest.name[i], side)
-                asset_list.append(tp_elevator)
-        elif "tr" in assets_manifest.name[i]:
-            tr_elevator = TerminalElevator(assets_manifest.name[i])
-            asset_list.append(tr_elevator)
-    return asset_list
-
-# asset_list = build_asset_list()
-# test = asset_list[1].get_total_cycles_query()
-# print(test)
+# def build_asset_list():
+#     """Generate list of object instances from .csv manifest"""
+#     asset_list = []
+#     for i in assets_manifest.index:
+#         if "tp" in assets_manifest.name[i]:
+#             for side in ["left", "right"]:
+#                 tp_elevator = TouchPointElevator(assets_manifest.name[i], side)
+#                 asset_list.append(tp_elevator)
+#         elif "tr" in assets_manifest.name[i]:
+#             tr_elevator = TerminalElevator(assets_manifest.name[i])
+#             asset_list.append(tr_elevator)
+#     return asset_list
