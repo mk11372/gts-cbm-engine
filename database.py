@@ -26,7 +26,7 @@ def close_connection(cnn):
 
 # ==== Manage Snowflake queries ====================
 
-def run_query(sql):
+def run_query(cs, sql):
     """Return pandas dataframe of queried result"""
     cs.execute(sql)
     return cs.fetch_pandas_all()

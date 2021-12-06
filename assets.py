@@ -41,6 +41,7 @@ class TouchPointElevator(TouchPoint, Elevator):
         self.side = side
 
     def get_total_cycles_query(self):
+        """Fill string literals with touchpoint-specific query parameters"""
         return super().get_total_cycles_query(header_context=", SUBSTATION_ELEVATOR", query_context=f"AND SUBSTATION_ELEVATOR = '{self.side}'")
 
 class TerminalElevator(Terminal, Elevator):
@@ -50,6 +51,7 @@ class TerminalElevator(Terminal, Elevator):
         Elevator.__init__(self, total_cycles, last_maintenance_date, partial_cycles)
 
     def get_total_cycles_query(self, header_context="", query_context=""):
+        """Fill string literals with touchpoint-specific query parameters"""
         return super().get_total_cycles_query(header_context, query_context)
 
 def build_asset_list():
