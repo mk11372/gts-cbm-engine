@@ -1,24 +1,9 @@
 import pandas as pd
-import snowflake.connector
 
 class Asset:
 
     def __init__(self, name):
         self.name = name
-
-    def open_snowflake_connection(self):
-
-        # Configuration parameters
-        cnn = snowflake.connector.connect (
-        user='MICHAELK',
-        password='nEKZUgX4wy7bUj6',
-        account='fa82594.us-central1.gcp',
-        warehouse='CSR_DB_LOAD',
-        database='CSR_DB',
-        schema='CSR_RAW'
-        )
-
-        return cnn
 
 class TouchPoint(Asset):
 
@@ -56,4 +41,3 @@ class TerminalElevator(TouchPoint, Elevator):
 #     if "tp" in assets.name[i]:
 #         TouchPointElevator(assets.name[i])
 #     else:
-
