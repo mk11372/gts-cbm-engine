@@ -18,11 +18,13 @@ def build_asset_list():
     return asset_list
 
 def get_maintenance_dates(csv="maintenance_dates.csv"):
+    """Convert Priority-formatted UTC dates to SQL-friendly strings"""
     last_maintenance_date_df = pd.read_csv("maintenance_dates.csv", header=0)
-    last_maintenance_date_df.date = last_maintenance_date_df.date.apply(lambda x: parser.parse(x).strftime("%y-%m-%d %H:%M:%S"))
+    last_maintenance_date_df.date = last_maintenance_date_df.date.apply(lambda x: parser.parse(x).strftime("%Y-%m-%d %H:%M:%S"))
     return last_maintenance_date_df
 
 def update__asset_maintenance_date(asset_list, last_maintenance_date_df):
+    """Update all assets with their last maintenance dates"""
     for i in last_maintenance_date_df.index:
         for asset in asset_list:
             if "tp" in asset.name:
@@ -39,8 +41,11 @@ def query_db(asset_list):
         sql = asset.get_total_cycles_query()
         total_cycles_df = db.run_query(cs, sql)
         asset.update_total_cycles(total_cycles_df)
+        sql = asset.get_partial_cycles_query()
+        partial_cycles_df = db.run_query(cs, sql)
+        asset.update_partial_cycles(partial_cycles_df) 
     db.close_cursor(cs)
-    db.close_connection(cnn)
+    db.close_connection(cnn)   
 
 def run_program():
     print("Building asset list...")

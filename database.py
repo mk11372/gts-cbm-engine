@@ -3,7 +3,7 @@ import snowflake.connector
 # ==== Manage connection to Snowflake service ====
 
 def open_connection():
-    # Configuration parameters
+    """Configuration parameters"""
     cnn = snowflake.connector.connect (
     user='MICHAELK',
     password='nEKZUgX4wy7bUj6',
