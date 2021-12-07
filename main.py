@@ -16,6 +16,17 @@ def build_asset_list():
             asset_list.append(tr_elevator)
     return asset_list
 
+def update__asset_maintenance_date(asset_list):
+    last_maintenance_date_df = pd.read_csv("maintenance_dates.csv", header=0)
+    for i in last_maintenance_date_df.index:
+        for asset in asset_list:
+            if "tp" in asset.name:
+                if f"{asset.name}-{asset.side}" == last_maintenance_date_df.asset[i]:
+                    asset.update_maintenance_date(last_maintenance_date_df.date[i])
+            elif "tr" in asset.name:
+                if asset.name == last_maintenance_date_df.asset[i]:
+                    asset.update_maintenance_date(last_maintenance_date_df.date[i])
+
 def query_db(asset_list):
     cnn = db.open_connection()
     cs = db.open_cursor(cnn)
@@ -30,8 +41,13 @@ def run_program():
     print("Building asset list...")
     asset_list = build_asset_list()
     print("Fetching asset data...")
+    update__asset_maintenance_date(asset_list)
     query_db(asset_list)
     print("Asset data ready!")
 
 run_program()
+
+
+
+
 
