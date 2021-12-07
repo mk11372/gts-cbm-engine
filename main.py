@@ -1,6 +1,7 @@
 import assets
 import database as db
 import pandas as pd
+from dateutil import parser
 
 def build_asset_list():
     """Generate list of object instances from .csv manifest"""
@@ -16,8 +17,12 @@ def build_asset_list():
             asset_list.append(tr_elevator)
     return asset_list
 
-def update__asset_maintenance_date(asset_list):
+def get_maintenance_dates(csv="maintenance_dates.csv"):
     last_maintenance_date_df = pd.read_csv("maintenance_dates.csv", header=0)
+    last_maintenance_date_df.date = last_maintenance_date_df.date.apply(lambda x: parser.parse(x).strftime("%y-%m-%d %H:%M:%S"))
+    return last_maintenance_date_df
+
+def update__asset_maintenance_date(asset_list, last_maintenance_date_df):
     for i in last_maintenance_date_df.index:
         for asset in asset_list:
             if "tp" in asset.name:
@@ -41,12 +46,12 @@ def run_program():
     print("Building asset list...")
     asset_list = build_asset_list()
     print("Fetching asset data...")
-    update__asset_maintenance_date(asset_list)
+    last_maintenance_date_df = get_maintenance_dates()
+    update__asset_maintenance_date(asset_list, last_maintenance_date_df)
     query_db(asset_list)
     print("Asset data ready!")
 
 run_program()
-
 
 
 
