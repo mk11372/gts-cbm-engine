@@ -1,4 +1,5 @@
 import assets
+import conditions
 import database as db
 import pandas as pd
 from dateutil import parser
@@ -45,7 +46,12 @@ def query_db(asset_list):
         partial_cycles_df = db.run_query(cs, sql)
         asset.update_partial_cycles(partial_cycles_df) 
     db.close_cursor(cs)
-    db.close_connection(cnn)   
+    db.close_connection(cnn)
+
+def check_conditions(asset_list):
+    for asset in asset_list:
+        maintenance_flag_result = conditions.station_belt_condition.check_against_threshold(asset.partial_cycles)
+        asset.update_maintenance_flag(maintenance_flag_result)
 
 def run_program():
     print("Building asset list...")
@@ -54,6 +60,7 @@ def run_program():
     last_maintenance_date_df = get_maintenance_dates()
     update__asset_maintenance_date(asset_list, last_maintenance_date_df)
     query_db(asset_list)
+    check_conditions(asset_list)
     print("Asset data ready!")
 
 run_program()

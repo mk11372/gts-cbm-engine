@@ -2,8 +2,12 @@ import pandas as pd
 
 class Asset:
 
-    def __init__(self, name):
+    def __init__(self, name, maintenance_flag=False):
         self.name = name
+        self.maintenance_flag = maintenance_flag
+
+    def update_maintenance_flag(self, new_value):
+        self.maintenance_flag = new_value
 
 class TouchPoint(Asset):
 
