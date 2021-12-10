@@ -19,6 +19,15 @@ def build_asset_list():
             asset_list.append(tr_elevator)
     return asset_list
 
+def get_asset_history(asset_list):
+    data = import_json()
+    for x in data:
+        for asset in asset_list:
+            if "tr" in asset.name and asset.name == x['name']:
+                asset.update_maintenance_flag(x['maintenance_flag'])
+            if "tp" in asset.name and asset.name == x['name'] and asset.side == x['side']:
+                asset.update_maintenance_flag(x['maintenance_flag'])
+
 def get_maintenance_dates(csv="maintenance_dates.csv"):
     """Convert Priority-formatted UTC dates to SQL-friendly strings"""
     last_maintenance_date_df = pd.read_csv("maintenance_dates.csv", header=0)
@@ -51,8 +60,9 @@ def query_db(asset_list):
 
 def check_conditions(asset_list):
     for asset in asset_list:
-        maintenance_flag_result = conditions.station_belt_condition.check_against_threshold(asset.partial_cycles)
-        asset.update_maintenance_flag(maintenance_flag_result)
+        if asset.maintenance_flag == False:
+            maintenance_flag_result = conditions.station_belt_condition.check_against_threshold(asset.partial_cycles)
+            asset.update_maintenance_flag(maintenance_flag_result)
 
 def export_json(asset_list):
     data = [asset.__dict__ for asset in asset_list]
@@ -67,6 +77,7 @@ def import_json():
 def run_program():
     print("Building asset list...")
     asset_list = build_asset_list()
+    get_asset_history(asset_list)
     print("Fetching asset data...")
     last_maintenance_date_df = get_maintenance_dates()
     update__asset_maintenance_date(asset_list, last_maintenance_date_df)
@@ -75,8 +86,6 @@ def run_program():
     export_json(asset_list)
     print("Asset data ready!")
 
-# run_program()
-
-
+run_program()
 
 
