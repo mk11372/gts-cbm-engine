@@ -54,10 +54,15 @@ def check_conditions(asset_list):
         maintenance_flag_result = conditions.station_belt_condition.check_against_threshold(asset.partial_cycles)
         asset.update_maintenance_flag(maintenance_flag_result)
 
-def export_to_json(asset_list):
-    data = json.dumps([asset.__dict__ for asset in asset_list])
+def export_json(asset_list):
+    data = [asset.__dict__ for asset in asset_list]
     with open('data.json', 'w') as outfile:
         json.dump(data, outfile)
+
+def import_json():
+    with open('data.json', 'r') as infile:
+        return json.load(infile)
+   
 
 def run_program():
     print("Building asset list...")
@@ -67,10 +72,10 @@ def run_program():
     update__asset_maintenance_date(asset_list, last_maintenance_date_df)
     query_db(asset_list)
     check_conditions(asset_list)
-    export_to_json(asset_list)
+    export_json(asset_list)
     print("Asset data ready!")
 
-run_program()
+# run_program()
 
 
 
