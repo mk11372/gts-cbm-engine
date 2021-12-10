@@ -7,7 +7,7 @@ class Asset:
         self.maintenance_flag = maintenance_flag
 
     def update_maintenance_flag(self, new_value):
-        self.maintenance_flag = new_value
+        self.maintenance_flag = bool(new_value)
 
 class TouchPoint(Asset):
 
@@ -45,10 +45,10 @@ class Elevator:
         return sql
 
     def update_total_cycles(self, total_cycles_df):
-        self.total_cycles = total_cycles_df.iloc[0].TOTAL_CYCLES
+        self.total_cycles = int(total_cycles_df.iloc[0].TOTAL_CYCLES)
 
     def update_partial_cycles(self, partial_cycles_df):
-        self.partial_cycles = partial_cycles_df.iloc[0].PARTIAL_CYCLES
+        self.partial_cycles = int(partial_cycles_df.iloc[0].PARTIAL_CYCLES)
 
     def update_maintenance_date(self, last_maintenance_date):
         self.last_maintenance_date = last_maintenance_date
